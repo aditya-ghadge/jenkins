@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        name = 'Aditya'
+    }
+
+    parameters {
+        string(name: 'person', defaultValue: 'Aditya Ghadge', description: 'Who are you')
+        booleanParam(name: 'isMale', defaultValue: true, description: '')
+    }
+
+    stages {
+        stage('Run a command') {
+            steps {
+                sh '''
+                    ls
+                    pwd
+                    date
+                '''
+            }
+        }
+
+        stage('Environment Variables') {
+            environment {
+                username = 'Aditya'
+            }
+            steps {
+                sh 'echo "BUILD_ID is: $BUILD_ID"'
+                sh 'echo \"Global name: $name\"'
+                sh 'echo \"Stage-level username: $username\"'
+            }
+        }
+
+        stage('Continue?') {
+            steps {
+                input message: 'Should we continue?', ok: 'Yes, we should'
+            }
+        }
+
+        stage('Deploy on prod') {
+            steps {
+                echo 'Deploying on production...'
+            }
+        }
+    }
+    post{
+        always {
+            echo 'i will always say hello again'
+        }
+    }
+}
